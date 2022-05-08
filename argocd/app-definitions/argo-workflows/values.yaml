@@ -1,0 +1,8 @@
+argo-workflows:
+  singleNamespace: false
+  controller:
+    containerRuntimeExecutor: "k8sapi"
+    workflowNamespaces:
+      - default
+  server:
+    extraArgs: [--auth-mode=server]

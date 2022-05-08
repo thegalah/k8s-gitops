@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: input-artifact-git-
+spec:
+  entrypoint: git-clone
+  templates:
+  - name: git-clone
+    inputs:
+      artifacts:
+      - name: argo-source
+        path: /src
+        git:
+          repo: https://github.com/thegalah/homeserver
+          revision: master
+          usernameSecret:
+            name: private-repo-creds
+            key: username
+          passwordSecret:
+            name: private-repo-creds
+            key: password
+    container:
+      image: golang:1.10
+      command: [sh, -c]
+      args: ["git status && ls"]
+      workingDir: /src
+    sidecars:
+    - name: dind
+      image: docker:19.03.13-dind
+      command: [dockerd-entrypoint.sh]
+      env:
+        - name: DOCKER_TLS_CERTDIR
+          value: ""
+      securityContext:
+        privileged: true
+      # mirrorVolumeMounts will mount the same volumes specified in the main container
+      # to the sidecar (including artifacts), at the same mountPaths. This enables
+      # dind daemon to (partially) see the same filesystem as the main container in
+      # order to use features such as docker volume binding.
+      mirrorVolumeMounts: true

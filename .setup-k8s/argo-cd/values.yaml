@@ -1,0 +1,8 @@
+server:
+  extraArgs:
+    - --insecure
+  ingress:
+    enabled: false
+configs:
+  secret:
+    argocdServerAdminPassword: "$2a$14$QbthDb7zVGh4oikhuYu2CuUXtLOMRW.jZZcqKZdNo4XtnoXsCHdM6" # testpassword
