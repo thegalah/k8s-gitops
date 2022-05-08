@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: http-hello-world
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: argo-cd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: argocd/app-definitions/http-hello-world
+    repoURL: https://github.com/thegalah/homeserver
+    targetRevision: master
+    helm:
+      valueFiles:
+        - values.yaml
+      releaseName: http-hello-world
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

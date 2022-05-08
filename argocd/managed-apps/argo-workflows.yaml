@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thegalah/homeserver
+    targetRevision: master
+    path: argocd/app-definitions/argo-workflows
+    helm:
+      valueFiles:
+        - values.yaml
+      releaseName: argo-workflows
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: argo-cd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
